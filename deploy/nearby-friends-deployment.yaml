@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nearbyfriends-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nearbyfriends-svc
+  template:
+    metadata:
+      labels:
+        app: nearbyfriends-svc
+    spec:
+      containers:
+        - name: nearbyfriends-svc
+          image: nearbyfriends:2.15
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: changeme
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgresql:5432/nearby?useSSL=false
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update

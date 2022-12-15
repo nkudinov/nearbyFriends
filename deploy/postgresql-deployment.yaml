@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-nearby
+  labels:
+    app: postgresql
+    tier: database
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgresql
+        tier: database
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:12
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_DB
+              value: nearby
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: changeme
+          ports:
+            - containerPort: 5432
+              name: postgresql
+          volumeMounts:
+            - name: postgresql-claim1
+              mountPath: /var/lib/postgresql-nearby/data
+
+            - mountPath: /docker-entrypoint-initdb.d
+              name: postgresql-initdb
+      volumes:
+        - name: postgresql-claim1
+          persistentVolumeClaim:
+            claimName: postgresql-claim1
+
+        - name: postgresql-initdb
+          configMap:
+            name: postgresql-initdb-config

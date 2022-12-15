@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-initdb-config
+data:
+  init.sql: |
+    create table users(user_id int, 
+                       user_name varchar(255),
+                       birthday date);
+    create table user_friends(user_id int,
+                              friend_id int);
